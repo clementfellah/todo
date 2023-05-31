@@ -4,7 +4,8 @@
 
 {% block body %}
     <h1>Todo index</h1>
-
+    <a href="{{ path('app_todo_index') }}?orderby=id&order=asc">Classer id</a>
+    <a href="{{ path('app_todo_index') }}?orderby=name&order=asc">Classer nom</a>
     <table class="table">
         <thead>
             <tr>
