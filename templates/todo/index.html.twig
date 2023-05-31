@@ -12,7 +12,8 @@
                 <th>Id</th>
                 <th>Name</th>
                 <th>Description</th>
-                <th>actions</th>
+                <th>Status</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -21,6 +22,13 @@
                 <td>{{ todo.id }}</td>
                 <td>{{ todo.name }}</td>
                 <td>{{ todo.description }}</td>
+                <td>
+                    {% if todo.done %}
+                        Fait
+                    {% else %}
+                        À faire
+                    {% endif %}
+                </td>
                 <td>
                     <a href="{{ path('app_todo_show', {'id': todo.id}) }}">show</a>
                     <a href="{{ path('app_todo_edit', {'id': todo.id}) }}">edit</a>
