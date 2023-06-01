@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Todo;
+use App\Form\TodoFilterType;
 use App\Form\TodoType;
 use App\Repository\TodoRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,22 +17,38 @@ use Symfony\Component\Routing\Annotation\Route;
 class TodoController extends AbstractController
 {
     /**
-     * @Route("/", name="app_todo_index", methods={"GET"})
+     * @Route("/", name="app_todo_index", methods={"GET", "POST"})
      */
     public function index(TodoRepository $todoRepository, Request $request): Response
     {
         $order = $request->query->get('order');
         $orderby = $request->query->get('orderby');
+        $criteria = [];
+
+        $form = $this->createForm(TodoFilterType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form -> isValid())
+        {
+            $isClicked = $form->get('stillTodo')->getData();
+            return $this->render('todo/index.html.twig', [
+                'todos' => $todoRepository->findBy([],$criteria),
+                'form' => $form->createView(),
+                'isClicked' => $isClicked
+            ]);
+        }
 
         if(isset($order) && isset($orderby)){
             $criteria = [$orderby => $order];
             return $this->render('todo/index.html.twig', [
-                'todos' => $todoRepository->findBy([],$criteria)
+                'todos' => $todoRepository->findBy([],$criteria),
+                'form' => $form->createView(),
             ]);
         }
         else{
             return $this->render('todo/index.html.twig', [
                 'todos' => $todoRepository->findAll(),
+                'form' => $form->createView(),
             ]);
         }
     }
